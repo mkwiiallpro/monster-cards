@@ -4,7 +4,7 @@ public class SoloStartMenu : MonoBehaviour
 {
     public void PressStart()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("DrawGame");
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

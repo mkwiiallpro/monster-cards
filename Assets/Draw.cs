@@ -45,6 +45,7 @@ public class Draw : MonoBehaviour
  
     private void Start()
     {
+        
         //Initializing the colorMap array with width * height elements
         colorMap = new Color[totalXPixels * totalYPixels];
         generatedTexture = new Texture2D(totalYPixels, totalXPixels, TextureFormat.RGBA32, false); //Generating a new texture with width and height
@@ -123,8 +124,9 @@ public class Draw : MonoBehaviour
         generatedTexture.Apply();
     }
  
-    void ResetColor() //This function resets the color to white
+    public void ResetColor() //This function resets the color to white
     {
+        Debug.Log("Color reset.");
         for (int i = 0; i < colorMap.Length; i++)
             colorMap[i] = Color.white;
         SetTexture();

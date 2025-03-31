@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e37d83ebce05ad74683fd3228dde9e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controllerHtml: {fileID: 4900000, guid: 24d0ea9f52a200b479f21be5710f94ac, type: 3}
+  controllerHtml: {fileID: 4900000, guid: 418ba94e4e5c1ad459d616133a17a7ea, type: 3}
   autoScaleCanvas: 1
   androidTvGameVersion: 
   androidUIResizeMode: 0

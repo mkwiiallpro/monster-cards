@@ -92,7 +92,7 @@
     }
 
     App.prototype.sendMessageToScreen = function(msg) {
-       this.airconsole.message(AirConsole.SCREEN, msg);
+       this.airconsole.message(AirConsole.SCREEN, {"text":msg});
     };
 
     App.prototype.broadcastMessage = function(msg) {
@@ -168,11 +168,25 @@
        document.getElementById("content").innerHTML = "Master is: " + master_id;
     };
 
+    App.prototype.sendMonster = function() {
+      var draw_data = "";
+      for(var i = 0; i<262144;i++){
+         if(Math.random() > 0.5){
+            draw_data = draw_data + "A";
+         }
+         else{
+            draw_data = draw_data + "B";
+         }
+      }
+      this.airconsole.message(AirConsole.SCREEN,{"colorMap":draw_data});
+    };
+
   </script>
 
 </head>
 <body onload="window.app = new App()">
     <div style="margin-top:50px">
+         <div class="button" ontouchstart="window.app.sendMonster()" ontouchend="window.app.sendMessageToScreen('stop')">Send Monster</div>
          <div class="button" ontouchstart="window.app.sendMessageToScreen('vote-left')" ontouchend="window.app.sendMessageToScreen('stop')">Vote Left</div>
          <div class="button" ontouchstart="window.app.sendMessageToScreen('vote-right')" ontouchend="window.app.sendMessageToScreen('stop')">Vote Right</div>
          

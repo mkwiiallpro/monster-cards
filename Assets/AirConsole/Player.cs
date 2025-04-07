@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using NDream.AirConsole;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
-public class Player : ScriptableObject 
+public class Player
 {
     string name;
     List<Monster> monsters;

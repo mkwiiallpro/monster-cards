@@ -16,15 +16,21 @@ public class AirConsoleGameLogic : MonoBehaviour
     [SerializeField]
     GameObject voteMenu;
     [SerializeField]
+    GameObject gameOverMenu;
+
+    [SerializeField]
     Material leftMonster;
     [SerializeField]
     Material rightMonster;
+
     [SerializeField]
     TextMeshProUGUI leftVotes;
     [SerializeField]
     TextMeshProUGUI rightVotes;
     [SerializeField]
     TextMeshProUGUI roundNumber;
+    [SerializeField]
+    TextMeshProUGUI winnerText;
 
     // Everything Else Relevant to the Game
     public int round;
@@ -197,9 +203,41 @@ public class AirConsoleGameLogic : MonoBehaviour
         }
         else
         {
+            gameMode = 3;
+            gameOverMenu.SetActive(true);
+            voteMenu.SetActive(false);
+            leftVotes.text = "";
+            rightVotes.text = "";
+            string win = AirConsole.instance.GetNickname(deviceIDs[0]);
+            winnerText.text = "Winner: "+win;
             // The game ends after three rounds
         }
         
+    }
+
+    // Press "Same Players" on "GameOverMenu"
+    public void PressSamePlayers()
+    {
+        gameOverMenu.SetActive(false);
+        drawMenu.SetActive(true);
+        leftVotes.text = "";
+        rightVotes.text = "";
+        round = 1;
+        gameMode = 1;
+        for(int i = 0; i<votes.Count; i++){
+            votes[i] = 0;
+            currentMonsters[i] = null;
+        }
+    }
+    // Press "Quit" on "GameOverMenu"
+    void OnDestroy()
+    {
+        //unregister events
+        if(AirConsole.instance != null)
+        {
+            AirConsole.instance.onMessage -= OnMessage;
+            AirConsole.instance.onConnect -= OnConnect;
+        }
     }
 
     // Update is called once per frame

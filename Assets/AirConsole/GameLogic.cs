@@ -77,7 +77,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     void OnMessage(int from, JToken data) 
     {
         Debug.Log("Button pressed");
-        if(data["colorMap"] != null){
+        if(data["colorMap"] != null && gameMode == 1){
             string drawData = data["colorMap"].ToString();
             Color[] temp = new Color[262144];
             for(int i =0; i<262144;i++){
@@ -94,7 +94,7 @@ public class AirConsoleGameLogic : MonoBehaviour
             currentMonsters[from] = generatedTexture;
             
         }
-        if(data["text"] != null){
+        if(data["text"] != null && gameMode == 2){
             if(data["text"].ToString() == "vote-left"){
                 votes[from] = 1;
                 AirConsole.instance.Message(from, "Vote Received");

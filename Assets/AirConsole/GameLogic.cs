@@ -31,6 +31,8 @@ public class AirConsoleGameLogic : MonoBehaviour
     TextMeshProUGUI roundNumber;
     [SerializeField]
     TextMeshProUGUI winnerText;
+    [SerializeField]
+    TextMeshProUGUI nameText;
 
     // Everything Else Relevant to the Game
     public int round;
@@ -46,6 +48,9 @@ public class AirConsoleGameLogic : MonoBehaviour
     [SerializeField]
     List<Texture2D> currentMonsters;
 
+    [SerializeField]
+    List<int> score;
+
     public int gameMode;
 
     void Awake() {
@@ -58,32 +63,45 @@ public class AirConsoleGameLogic : MonoBehaviour
     {
         enoughPlayers = false;
         gameMode = 0;
-        votes = new List<int>();
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
         votes.Add(0);
+        score.Add(0);
         currentMonsters.Add(null);
+        
     }
+
+    // Receive Signals from AirConsole
     void OnMessage(int from, JToken data) 
     {
         Debug.Log("Button pressed");
         if(data["colorMap"] != null && gameMode == 1){
+            // Turns sent data into a Texture2D
             string drawData = data["colorMap"].ToString();
             Color[] temp = new Color[262144];
             for(int i =0; i<262144;i++){
@@ -99,6 +117,9 @@ public class AirConsoleGameLogic : MonoBehaviour
             generatedTexture.Apply();
             currentMonsters[from] = generatedTexture;
             
+            // Adds the user to the "Done" list
+            nameText.text += AirConsole.instance.GetNickname(from);
+            nameText.text += "\n";
         }
         if(data["text"] != null && gameMode == 2){
             if(data["text"].ToString() == "vote-left"){
@@ -112,6 +133,8 @@ public class AirConsoleGameLogic : MonoBehaviour
         }
         
     }
+
+
     void OnConnect(int device_id)
     {
         string newNickname = AirConsole.instance.GetNickname(device_id);
@@ -140,6 +163,7 @@ public class AirConsoleGameLogic : MonoBehaviour
             rightVotes.text = "";
             round = 1;
             gameMode = 1;
+            nameText.text = "Done:\n";
         }
         else
         {
@@ -153,8 +177,13 @@ public class AirConsoleGameLogic : MonoBehaviour
         int numVotes = 0;
         int numLeft = 0;
         int numRight = 0;
+        int winnerVotes = 0;
         foreach(int i in votes)
         {
+            if(i>winnerVotes)
+            {
+                winnerVotes = i;
+            }
             if(i != 0){
                 numVotes++;
             }
@@ -163,6 +192,12 @@ public class AirConsoleGameLogic : MonoBehaviour
             }
             if(i == 2){
                 numRight++;
+            }
+        }
+        for(int i =0; i<10; i++){
+            if(votes[i] == winnerVotes && winnerVotes > 0)
+            {
+                score[i]++;
             }
         }
         // Check if anyone has voted
@@ -179,6 +214,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     // Press "Next" on "DrawMenu"
     public void PressNextDraw()
     {
+        
         gameMode = 2;
         voteMenu.SetActive(true);
         drawMenu.SetActive(false);
@@ -200,6 +236,7 @@ public class AirConsoleGameLogic : MonoBehaviour
             drawMenu.SetActive(true);
             leftVotes.text = "";
             rightVotes.text = "";
+            nameText.text = "Done:\n";
         }
         else
         {
@@ -208,7 +245,22 @@ public class AirConsoleGameLogic : MonoBehaviour
             voteMenu.SetActive(false);
             leftVotes.text = "";
             rightVotes.text = "";
-            string win = AirConsole.instance.GetNickname(deviceIDs[0]);
+            int highscore = 0;
+            string win = "";
+            foreach(int i in deviceIDs)
+            {
+                Debug.Log(score[i]);
+                Debug.Log(AirConsole.instance.GetNickname(i));
+                if(highscore == score[i])
+                {
+                    win += AirConsole.instance.GetNickname(i);
+                }
+                else if(highscore < score[i])
+                {
+                    highscore = score[i];
+                    win = AirConsole.instance.GetNickname(i);
+                }
+            }
             winnerText.text = "Winner: "+win;
             // The game ends after three rounds
         }
@@ -222,6 +274,7 @@ public class AirConsoleGameLogic : MonoBehaviour
         drawMenu.SetActive(true);
         leftVotes.text = "";
         rightVotes.text = "";
+        nameText.text = "Done:\n";
         round = 1;
         gameMode = 1;
         for(int i = 0; i<votes.Count; i++){

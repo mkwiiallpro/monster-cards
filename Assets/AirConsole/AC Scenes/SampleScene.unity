@@ -153,7 +153,7 @@ MonoBehaviour:
   androidTvGameVersion: 
   androidUIResizeMode: 0
   webViewLoadingSprite: {fileID: 0}
-  browserStartMode: 2
+  browserStartMode: 0
   devGameId: com.airconsole.plugin.unity
   devLanguage: 
   LocalIpOverride: 
@@ -3121,11 +3121,13 @@ MonoBehaviour:
   rightVotes: {fileID: 1982892121}
   roundNumber: {fileID: 1463201192}
   winnerText: {fileID: 757769742}
+  nameText: {fileID: 1467256434}
   round: 0
   names: {fileID: 1555681850}
   deviceIDs: 
   votes: 
   currentMonsters: []
+  score: 
   gameMode: 0
 --- !u!4 &967396771
 Transform:

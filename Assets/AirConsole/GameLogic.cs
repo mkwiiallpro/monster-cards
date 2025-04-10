@@ -177,13 +177,8 @@ public class AirConsoleGameLogic : MonoBehaviour
         int numVotes = 0;
         int numLeft = 0;
         int numRight = 0;
-        int winnerVotes = 0;
         foreach(int i in votes)
         {
-            if(i>winnerVotes)
-            {
-                winnerVotes = i;
-            }
             if(i != 0){
                 numVotes++;
             }
@@ -194,17 +189,21 @@ public class AirConsoleGameLogic : MonoBehaviour
                 numRight++;
             }
         }
-        for(int i =0; i<10; i++){
-            if(votes[i] == winnerVotes && winnerVotes > 0)
-            {
-                score[i]++;
-            }
-        }
+
+        
         // Check if anyone has voted
         if(numVotes >= 0)
         {
             leftVotes.text = "Votes: "+numLeft;
             rightVotes.text = "Votes: "+numRight;
+            if(numLeft >= numRight)
+            {
+                score[deviceIDs[0]]++;
+            }
+            if(numLeft <= numRight)
+            {
+                score[deviceIDs[1]]++;
+            }
         }
         else
         {

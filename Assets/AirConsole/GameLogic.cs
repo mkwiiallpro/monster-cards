@@ -278,6 +278,7 @@ public class AirConsoleGameLogic : MonoBehaviour
         gameMode = 1;
         for(int i = 0; i<votes.Count; i++){
             votes[i] = 0;
+            score[i] = 0;
             currentMonsters[i] = null;
         }
     }

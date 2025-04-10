@@ -10,6 +10,10 @@ public class AirConsoleGameLogic : MonoBehaviour
 {
     // All Serialized Game Objects
     [SerializeField]
+    GameObject monsterPrefab;
+    [SerializeField]
+    List<GameObject> monsterObjects;
+    [SerializeField]
     GameObject groupStartMenu;
     [SerializeField]
     GameObject drawMenu;
@@ -51,9 +55,11 @@ public class AirConsoleGameLogic : MonoBehaviour
     List<string> monsterNames;
     [SerializeField]
     List<string> monsterTypes;
+    
 
     [SerializeField]
     List<int> score;
+
 
     public int gameMode;
 
@@ -65,6 +71,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        monsterObjects = new List<GameObject>();
         enoughPlayers = false;
         gameMode = 0;
         votes.Add(0);
@@ -238,15 +245,27 @@ public class AirConsoleGameLogic : MonoBehaviour
         // Check if anyone has voted
         if(numVotes >= 0)
         {
-            leftVotes.text = "Votes: "+numLeft;
-            rightVotes.text = "Votes: "+numRight;
-            if(numLeft >= numRight)
+            leftVotes.text = "Votes: "+numLeft+"\n";
+            rightVotes.text = "Votes: "+numRight+"\n";
+            
+            if(numLeft > numRight)
             {
                 score[deviceIDs[0]]++;
+                leftVotes.text += "HP Left: 10";
+                rightVotes.text += "HP Left: 0";
             }
-            if(numLeft <= numRight)
+            if(numLeft < numRight)
             {
                 score[deviceIDs[1]]++;
+                leftVotes.text += "HP Left: 0";
+                rightVotes.text += "HP Left: 10";
+            }
+            if(numLeft == numRight)
+            {
+                score[deviceIDs[1]]++;
+                score[deviceIDs[0]]++;
+                leftVotes.text += "HP Left: 5";
+                rightVotes.text += "HP Left: 5";
             }
         }
         else
@@ -267,10 +286,15 @@ public class AirConsoleGameLogic : MonoBehaviour
         leftVotes.text = "Name: "+monsterNames[deviceIDs[0]]+"\n";
         leftVotes.text += "Type: "+monsterTypes[deviceIDs[0]]+"\n";
         leftMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[0]]);
+        GameObject leftTemp = Instantiate(monsterPrefab);
 
         rightVotes.text = "Name: "+monsterNames[deviceIDs[1]]+"\n";
         rightVotes.text += "Type: "+monsterTypes[deviceIDs[1]]+"\n";
         rightMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[1]]);
+        GameObject rightTemp = Instantiate(monsterPrefab);
+
+        monsterObjects.Add(leftTemp);
+        monsterObjects.Add(rightTemp);
     }
 
     // Press "Next" on "VoteMenu"
@@ -329,6 +353,8 @@ public class AirConsoleGameLogic : MonoBehaviour
             votes[i] = 0;
             score[i] = 0;
             currentMonsters[i] = null;
+            monsterNames[i] = "";
+            monsterTypes[i] = "None";
         }
     }
     // Press "Quit" on "GameOverMenu"

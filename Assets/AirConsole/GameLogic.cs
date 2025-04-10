@@ -47,6 +47,10 @@ public class AirConsoleGameLogic : MonoBehaviour
 
     [SerializeField]
     List<Texture2D> currentMonsters;
+    [SerializeField]
+    List<string> monsterNames;
+    [SerializeField]
+    List<string> monsterTypes;
 
     [SerializeField]
     List<int> score;
@@ -66,33 +70,54 @@ public class AirConsoleGameLogic : MonoBehaviour
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
         votes.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
+        monsterNames.Add("");
+        monsterTypes.Add("None");
+        
         
     }
 
@@ -100,6 +125,8 @@ public class AirConsoleGameLogic : MonoBehaviour
     void OnMessage(int from, JToken data) 
     {
         Debug.Log("Button pressed");
+
+        // Handle Drawing Signals
         if(data["colorMap"] != null && gameMode == 1){
             // Turns sent data into a Texture2D
             string drawData = data["colorMap"].ToString();
@@ -120,7 +147,12 @@ public class AirConsoleGameLogic : MonoBehaviour
             // Adds the user to the "Done" list
             nameText.text += AirConsole.instance.GetNickname(from);
             nameText.text += "\n";
+
+            // Send confirmation
+            AirConsole.instance.Message(from, "Monster Received");
         }
+
+        // Handle Vote Signals
         if(data["text"] != null && gameMode == 2){
             if(data["text"].ToString() == "vote-left"){
                 votes[from] = 1;
@@ -130,6 +162,18 @@ public class AirConsoleGameLogic : MonoBehaviour
                 votes[from] = 2;
                 AirConsole.instance.Message(from, "Vote Received");
             }
+        }
+
+        // Handle Monster Data
+        if(data["monsterName"] != null && gameMode == 1)
+        {
+            Debug.Log("We did a thing:" + data["monsterName"].ToString());
+            monsterNames[from] = data["monsterName"].ToString();
+        }
+        if(data["monsterType"] != null && gameMode == 1)
+        {
+            monsterTypes[from] = data["monsterType"].ToString();
+            
         }
         
     }
@@ -220,7 +264,12 @@ public class AirConsoleGameLogic : MonoBehaviour
         for(int i = 0; i<10; i++){
             votes[i] =0;
         }
+        leftVotes.text = "Name: "+monsterNames[deviceIDs[0]]+"\n";
+        leftVotes.text += "Type: "+monsterTypes[deviceIDs[0]]+"\n";
         leftMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[0]]);
+
+        rightVotes.text = "Name: "+monsterNames[deviceIDs[1]]+"\n";
+        rightVotes.text += "Type: "+monsterTypes[deviceIDs[1]]+"\n";
         rightMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[1]]);
     }
 

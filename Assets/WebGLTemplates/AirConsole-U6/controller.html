@@ -169,6 +169,7 @@
     };
 
     App.prototype.sendMonster = function() {
+
       var draw_data = "";
       for(var i = 0; i<262144;i++){
          if(Math.random() > 0.5){
@@ -179,6 +180,13 @@
          }
       }
       this.airconsole.message(AirConsole.SCREEN,{"colorMap":draw_data});
+      var x = document.getElementById("frm1");
+      var monsterName = x.elements[0].value
+      this.airconsole.message(AirConsole.SCREEN, {"monsterName": monsterName})
+      var monsterType = x.elements[1].value
+      this.airconsole.message(AirConsole.SCREEN,{"monsterType":monsterType})
+
+      
     };
 
   </script>
@@ -186,6 +194,12 @@
 </head>
 <body onload="window.app = new App()">
     <div style="margin-top:50px">
+         <form id="frm1">   
+            <label for="mname">Monster Name</label><br>
+            <input type="text" id="mname" name="mname"><br>
+            <label for="mtype">Monster Type</label><br>
+            <input type="text" id="mtype" name="mtype"><br>
+         </form>
          <div class="button" ontouchstart="window.app.sendMonster()" ontouchend="window.app.sendMessageToScreen('stop')">Send Monster</div>
          <div class="button" ontouchstart="window.app.sendMessageToScreen('vote-left')" ontouchend="window.app.sendMessageToScreen('stop')">Vote Left</div>
          <div class="button" ontouchstart="window.app.sendMessageToScreen('vote-right')" ontouchend="window.app.sendMessageToScreen('stop')">Vote Right</div>

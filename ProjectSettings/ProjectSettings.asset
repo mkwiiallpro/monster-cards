@@ -82,7 +82,7 @@ PlayerSettings:
   androidApplicationEntry: 2
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
-  runInBackground: 0
+  runInBackground: 1
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
   Force IOS Speakers When Recording: 0
@@ -534,12 +534,12 @@ PlayerSettings:
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
   m_TemplateCustomTags:
-    PROGRESS_BAR_BACKGROUND_COLOR: 
-    PROGRESS_BAR_COLOR: 
-    PROGRESS_BAR_HEIGHT: 
-    PROGRESS_BAR_OFFSET_LEFT: 
-    PROGRESS_BAR_OFFSET_TOP: 
-    PROGRESS_BAR_WIDTH: 
+    PROGRESS_BAR_BACKGROUND_COLOR: rgba(56,56,56,0.8)
+    PROGRESS_BAR_COLOR: white
+    PROGRESS_BAR_HEIGHT: 4%
+    PROGRESS_BAR_OFFSET_LEFT: 0%
+    PROGRESS_BAR_OFFSET_TOP: 0%
+    PROGRESS_BAR_WIDTH: 100%
   mobileMTRendering:
     Android: 1
     iPhone: 1

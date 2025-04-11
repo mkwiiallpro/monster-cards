@@ -41,6 +41,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     // Everything Else Relevant to the Game
     public int round;
     bool enoughPlayers;
+    bool resultsReveal;
     public Text names;
 
     [SerializeField]
@@ -73,6 +74,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     {
         monsterObjects = new List<GameObject>();
         enoughPlayers = false;
+        resultsReveal = false;
         gameMode = 0;
         votes.Add(0);
         score.Add(0);
@@ -171,6 +173,34 @@ public class AirConsoleGameLogic : MonoBehaviour
             }
         }
 
+        // Handle Menu Operations, only from the host
+        if(data["text"].ToString() == "next" && from == deviceIDs[0])
+        {
+            if(groupStartMenu.activeSelf)
+            {
+                PressStartGroup();
+            }
+            else if(drawMenu.activeSelf)
+            {
+                PressNextDraw();
+            }
+            else if(voteMenu.activeSelf)
+            {
+                if(resultsReveal)
+                {
+                    PressNext();
+                }
+                else
+                {
+                    PressResults();
+                }
+            }
+            else if(gameOverMenu.activeSelf)
+            {
+                PressSamePlayers();
+            }
+        }
+
         // Handle Monster Data
         if(data["monsterName"] != null && gameMode == 1)
         {
@@ -218,6 +248,7 @@ public class AirConsoleGameLogic : MonoBehaviour
         }
         else
         {
+            AirConsole.instance.Message(deviceIDs[0], "ERROR: Not Enough Players");
             // Tell the user that not enough players have joined
         }
     }
@@ -225,6 +256,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     // Press "Results" on "VoteMenu"
     public void PressResults()
     {
+        resultsReveal = true;
         int numVotes = 0;
         int numLeft = 0;
         int numRight = 0;
@@ -300,6 +332,7 @@ public class AirConsoleGameLogic : MonoBehaviour
     // Press "Next" on "VoteMenu"
     public void PressNext()
     {
+        resultsReveal = false;
         if(round < 3)
         {
             round++;

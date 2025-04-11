@@ -56,7 +56,9 @@ public class AirConsoleGameLogic : MonoBehaviour
     List<string> monsterNames;
     [SerializeField]
     List<string> monsterTypes;
-    
+
+    [SerializeField]
+    List<int> hp;
 
     [SerializeField]
     List<int> score;
@@ -77,6 +79,16 @@ public class AirConsoleGameLogic : MonoBehaviour
         resultsReveal = false;
         gameMode = 0;
         votes.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
+        hp.Add(0);
         score.Add(0);
         currentMonsters.Add(null);
         monsterNames.Add("");
@@ -156,9 +168,18 @@ public class AirConsoleGameLogic : MonoBehaviour
             // Adds the user to the "Done" list
             nameText.text += AirConsole.instance.GetNickname(from);
             nameText.text += "\n";
-
+            // If New Monster, set its HP to 10
+            if(hp[from] <= 0)
+            {
+                AirConsole.instance.Message(from, "New Monster Received");
+                hp[from] = 10;
+            }
+            else
+            {
+                AirConsole.instance.Message(from, "Monster Received");
+            }
             // Send confirmation
-            AirConsole.instance.Message(from, "Monster Received");
+            
         }
 
         // Handle Vote Signals
@@ -287,22 +308,38 @@ public class AirConsoleGameLogic : MonoBehaviour
             
             if(numLeft > numRight)
             {
-                score[deviceIDs[0]]++;
-                leftVotes.text += "HP Left: 10";
-                rightVotes.text += "HP Left: 0";
+                hp[deviceIDs[0]] -= numRight;
+                hp[deviceIDs[1]] -= 10;
+                leftVotes.text += "HP Left: ";
+                leftVotes.text += hp[deviceIDs[0]];
+                rightVotes.text += "HP Left:";
+                rightVotes.text += hp[deviceIDs[1]];
             }
             if(numLeft < numRight)
             {
-                score[deviceIDs[1]]++;
-                leftVotes.text += "HP Left: 0";
-                rightVotes.text += "HP Left: 10";
+                hp[deviceIDs[0]] -= 10;
+                hp[deviceIDs[1]] -= numLeft;
+                leftVotes.text += "HP Left: ";
+                leftVotes.text += hp[deviceIDs[0]];
+                rightVotes.text += "HP Left:";
+                rightVotes.text += hp[deviceIDs[1]];
             }
             if(numLeft == numRight)
             {
+                hp[deviceIDs[0]] -= 5;
+                hp[deviceIDs[1]] -= 5;
+                leftVotes.text += "HP Left: ";
+                leftVotes.text += hp[deviceIDs[0]];
+                rightVotes.text += "HP Left:";
+                rightVotes.text += hp[deviceIDs[1]];
+            }
+            if(hp[deviceIDs[0]] <= 0)
+            {
                 score[deviceIDs[1]]++;
+            }
+            if(hp[deviceIDs[1]] <= 0)
+            {
                 score[deviceIDs[0]]++;
-                leftVotes.text += "HP Left: 5";
-                rightVotes.text += "HP Left: 5";
             }
         }
         else
@@ -313,32 +350,46 @@ public class AirConsoleGameLogic : MonoBehaviour
     // Press "Next" on "DrawMenu"
     public void PressNextDraw()
     {
-        
-        gameMode = 2;
-        voteMenu.SetActive(true);
-        drawMenu.SetActive(false);
-        for(int i = 0; i<10; i++){
-            votes[i] =0;
+        bool allReady = true;
+        for(int i=0; i<2; i++)
+        {
+            if(hp[deviceIDs[i]] <= 0)
+            {
+                allReady = false;
+            }
         }
-        leftVotes.text = "Name: "+monsterNames[deviceIDs[0]]+"\n";
-        leftVotes.text += "Type: "+monsterTypes[deviceIDs[0]]+"\n";
-        leftMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[0]]);
-        GameObject leftTemp = Instantiate(monsterPrefab);
+        if(allReady)
+        {
+            gameMode = 2;
+            voteMenu.SetActive(true);
+            drawMenu.SetActive(false);
+            for(int i = 0; i<10; i++){
+                votes[i] =0;
+            }
+            leftVotes.text = "Name: "+monsterNames[deviceIDs[0]]+"\n";
+            leftVotes.text += "Type: "+monsterTypes[deviceIDs[0]]+"\n";
+            leftMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[0]]);
+            GameObject leftTemp = Instantiate(monsterPrefab);
 
-        rightVotes.text = "Name: "+monsterNames[deviceIDs[1]]+"\n";
-        rightVotes.text += "Type: "+monsterTypes[deviceIDs[1]]+"\n";
-        rightMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[1]]);
-        GameObject rightTemp = Instantiate(monsterPrefab);
+            rightVotes.text = "Name: "+monsterNames[deviceIDs[1]]+"\n";
+            rightVotes.text += "Type: "+monsterTypes[deviceIDs[1]]+"\n";
+            rightMonster.SetTexture("_BaseMap",currentMonsters[deviceIDs[1]]);
+            GameObject rightTemp = Instantiate(monsterPrefab);
 
-        monsterObjects.Add(leftTemp);
-        monsterObjects.Add(rightTemp);
+            monsterObjects.Add(leftTemp);
+            monsterObjects.Add(rightTemp);
+        }
+        else
+        {
+            AirConsole.instance.Message(deviceIDs[0], "ERROR: Not everyone's monster is ready!");
+        }
     }
 
     // Press "Next" on "VoteMenu"
     public void PressNext()
     {
         resultsReveal = false;
-        if(round < 3)
+        if(round < 5)
         {
             round++;
             gameMode = 1;
@@ -390,6 +441,7 @@ public class AirConsoleGameLogic : MonoBehaviour
         for(int i = 0; i<votes.Count; i++){
             votes[i] = 0;
             score[i] = 0;
+            hp[i] = 0;
             currentMonsters[i] = null;
             monsterNames[i] = "";
             monsterTypes[i] = "None";

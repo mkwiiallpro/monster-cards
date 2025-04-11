@@ -176,6 +176,7 @@ public class AirConsoleGameLogic : MonoBehaviour
         // Handle Menu Operations, only from the host
         if(data["text"].ToString() == "next" && from == deviceIDs[0])
         {
+            AirConsole.instance.Message(from, "Menu Operated");
             if(groupStartMenu.activeSelf)
             {
                 PressStartGroup();
@@ -199,6 +200,10 @@ public class AirConsoleGameLogic : MonoBehaviour
             {
                 PressSamePlayers();
             }
+        }
+        if(data["text"].ToString() == "next" && from != deviceIDs[0])
+        {
+            AirConsole.instance.Message(from, "ERROR: You aren't the host!");
         }
 
         // Handle Monster Data

@@ -3,6 +3,8 @@
 <head>
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.9.0.js"></script>
+  <script type="text/javascript" src="./touch-area.js"></script>
+  <script type="text/javascript" src="./rate-limiter.js"></script>
 
   <style type=text/css>
 
@@ -41,6 +43,7 @@
    right: 5%;
    bottom: 5%;
   }
+  
 
   </style>
 
@@ -52,7 +55,12 @@
      */
     function App() {
       var me = this;
-      me.airconsole = new AirConsole({"orientation": "portrait", "synchronize_time" : "true"});
+      const canvas = document.getElementById("cv");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "white";
+      ctx.fillRect(0,0,255,255);
+
+      
       me.airconsole.onMessage = function(from, data) {
         console.log("onMessage", from, data);
         document.getElementById("content").innerHTML = "device " + from + " says: " + data;
@@ -181,25 +189,45 @@
       }
       this.airconsole.message(AirConsole.SCREEN,{"colorMap":draw_data});
       var x = document.getElementById("frm1");
-      var monsterName = x.elements[0].value
+      var monsterName = x.elements[1].value
       this.airconsole.message(AirConsole.SCREEN, {"monsterName": monsterName})
-      var monsterType = x.elements[1].value
+      var monsterType = x.elements[2].value
       this.airconsole.message(AirConsole.SCREEN,{"monsterType":monsterType})
 
       
     };
+
+    App.prototype.clearCanvas = function() {
+      const canvas = document.getElementById("cv");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "red";
+      ctx.fillRect(0,0,255,255);
+
+    };
+
+
+    
+
+    
+
 
   </script>
 
 </head>
 <body onload="window.app = new App()">
     <div style="margin-top:50px">
+
+         
+         <canvas id="cv" width="256" height="256"></canvas>
+         
          <form id="frm1">   
+            <input type="color" name="stroke" id="stroke"><br>
             <p style="color:white;font-family: Arial;">Monster Name</p><br>
             <input type="text" id="mname" name="mname"><br>
             <p style="color:white;font-family: Arial;">Monster Type</p><br>
             <input type="text" id="mtype" name="mtype"><br>
          </form>
+         <div class="button" ontouchstart="window.app.clearCanvas()" ontouchend="window.app.sendMessageToScreen('stop')">Clear Canvas</div>
          <div class="button" ontouchstart="window.app.sendMonster()" ontouchend="window.app.sendMessageToScreen('stop')">Send Monster</div>
          <div class="button" ontouchstart="window.app.sendMessageToScreen('vote-left')" ontouchend="window.app.sendMessageToScreen('stop')">Vote Left</div>
          <div class="button" ontouchstart="window.app.sendMessageToScreen('vote-right')" ontouchend="window.app.sendMessageToScreen('stop')">Vote Right</div>
@@ -207,5 +235,6 @@
     </div>
     <div id ="profile-pic"></div>
     <div id="content"><!--Incoming messages get displayed in this container--></div>
+    
 </body>
 </html>

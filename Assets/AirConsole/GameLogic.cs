@@ -151,16 +151,15 @@ public class AirConsoleGameLogic : MonoBehaviour
         if(data["colorMap"] != null && gameMode == 1){
             // Turns sent data into a Texture2D
             string drawData = data["colorMap"].ToString();
-            Color[] temp = new Color[262144];
-            for(int i =0; i<262144;i++){
-                if(drawData[i] == 'A'){
-                    temp[i] = Color.black;
-                }
-                else{
-                    temp[i] = Color.white;
-                }
+            Color[] temp = new Color[65536];
+            for(int i = 0 ; i<65536; i++){
+                float red = 1.0f/9.0f * (float)(drawData[3*i]-65);
+                float green = 1.0f/9.0f * (float)(drawData[3*i+1]-65);
+                float blue = 1.0f/9.0f * (float)(drawData[3*i+2]-65);
+                temp[i] = new Color(red,green,blue,1.0f);
+                //Debug.Log(red);
             }
-            Texture2D generatedTexture = new Texture2D(512,512,TextureFormat.RGBA32, false);
+            Texture2D generatedTexture = new Texture2D(256,256,TextureFormat.RGBA32, false);
             generatedTexture.SetPixels(temp);
             generatedTexture.Apply();
             currentMonsters[from] = generatedTexture;
@@ -194,39 +193,7 @@ public class AirConsoleGameLogic : MonoBehaviour
             }
         }
 
-        // Handle Menu Operations, only from the host
-        if(data["text"].ToString() == "next" && from == deviceIDs[0])
-        {
-            AirConsole.instance.Message(from, "Menu Operated");
-            if(groupStartMenu.activeSelf)
-            {
-                PressStartGroup();
-            }
-            else if(drawMenu.activeSelf)
-            {
-                PressNextDraw();
-            }
-            else if(voteMenu.activeSelf)
-            {
-                if(resultsReveal)
-                {
-                    PressNext();
-                }
-                else
-                {
-                    PressResults();
-                }
-            }
-            else if(gameOverMenu.activeSelf)
-            {
-                PressSamePlayers();
-            }
-        }
-        if(data["text"].ToString() == "next" && from != deviceIDs[0])
-        {
-            AirConsole.instance.Message(from, "ERROR: You aren't the host!");
-        }
-
+    
         // Handle Monster Data
         if(data["monsterName"] != null && gameMode == 1)
         {
@@ -235,8 +202,52 @@ public class AirConsoleGameLogic : MonoBehaviour
         }
         if(data["monsterType"] != null && gameMode == 1)
         {
-            monsterTypes[from] = data["monsterType"].ToString();
+            if(data["monsterType"].ToString() == "")
+            {
+                monsterTypes[from] = "None";
+            }
+            else
+            {
+                monsterTypes[from] = data["monsterType"].ToString();
+            }
             
+            
+        }
+
+        // Handle Menu Operations, only from the host
+        if(data["text"] != null)
+        {
+            if(data["text"].ToString() == "next" && from == deviceIDs[0])
+            {
+                AirConsole.instance.Message(from, "Menu Operated");
+                if(groupStartMenu.activeSelf)
+                {
+                    PressStartGroup();
+                }
+                else if(drawMenu.activeSelf)
+                {
+                    PressNextDraw();
+                }
+                else if(voteMenu.activeSelf)
+                {
+                    if(resultsReveal)
+                    {
+                        PressNext();
+                    }
+                    else
+                    {
+                        PressResults();
+                    }
+                }
+                else if(gameOverMenu.activeSelf)
+                {
+                    PressSamePlayers();
+                }
+            }
+            if(data["text"].ToString() == "next" && from != deviceIDs[0])
+            {
+                AirConsole.instance.Message(from, "ERROR: You aren't the host!");
+            }
         }
         
     }
@@ -260,7 +271,12 @@ public class AirConsoleGameLogic : MonoBehaviour
 
     // Press "Start" on "GroupStartMenu"
     public void PressStartGroup()
-    {
+    {   
+        if (AirConsole.instance.GetControllerDeviceIds().Count >= 2)
+        {
+            enoughPlayers = true;
+            Debug.Log("Enough players have joined!");
+        }
         // Check if there are enough players
         if(enoughPlayers)
         {

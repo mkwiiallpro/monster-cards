@@ -5,17 +5,23 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game.unity
     guid: 7869a16f99411f64bbfa33cd5be0a68a
+  - enabled: 0
+    path: Assets/Scenes/CombatGame.unity
+    guid: 5bb082188ba59a245a245fb16f1a28ba
+  - enabled: 1
+    path: Assets/AirConsole/AC Scenes/SampleScene.unity
+    guid: 3349f11767e2fbc4baf5378e2cb35884
   - enabled: 1
     path: Assets/Scenes/DrawGame.unity
     guid: 343f482822c033a4683856c274dc1a7e
-  - enabled: 1
-    path: Assets/Scenes/CombatGame.unity
-    guid: 5bb082188ba59a245a245fb16f1a28ba
+  - enabled: 0
+    path: Assets/AirConsole/examples/basic/basic.unity
+    guid: be2892f0848650f4fa6714ec6d9100bf
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

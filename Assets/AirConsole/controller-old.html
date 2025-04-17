@@ -231,8 +231,16 @@ this.airconsole.message(AirConsole.SCREEN,{"monsterType":monsterType})
     }
 
     App.prototype.paint = function(event){
-        var curr_x = event.clientX;
-        var curr_y = event.clientY;
+        var curr_x = 0;
+        var curr_y = 0;
+        if(typeof event.touches === 'undefined'){
+            curr_x = event.clientX
+            curr_y = event.clientY
+        }
+        else{
+            curr_x = event.touches[0].clientX;
+            curr_y = event.touches[0].clientY;
+        }
         var toolbar = document.getElementById("frm1");
         var canvas = document.getElementById("cv");
         var ctx = canvas.getContext("2d");
@@ -252,8 +260,9 @@ this.airconsole.message(AirConsole.SCREEN,{"monsterType":monsterType})
     App.prototype.endpaint = function(){
         document.getElementById("ismousedown").innerHTML = "0"
     }
-    App.prototype.startpaint = function(){
+    App.prototype.startpaint = function(event){
         document.getElementById("ismousedown").innerHTML = "1"
+       
     }
 
   </script>
@@ -261,7 +270,7 @@ this.airconsole.message(AirConsole.SCREEN,{"monsterType":monsterType})
 </head>
 <body onload="window.app = new App()">
     <div style="margin-top:50px">
-        <div ontouchstart="window.app.startpaint()" ontouchmove="window.app.paint(event)" ontouchend="window.app.endpaint()">
+        <div ontouchstart="window.app.startpaint(event)" ontouchmove="window.app.paint(event)" ontouchend="window.app.endpaint()">
             <canvas id="cv" width="256" height="256"></canvas>
         </div> 
          <form id="frm1">   
@@ -288,8 +297,9 @@ this.airconsole.message(AirConsole.SCREEN,{"monsterType":monsterType})
         var canvas = document.getElementById("cv");
         var ctx = canvas.getContext("2d");
         function blackdot(event){
-            ctx.fillStyle = "white";
-        ctx.fillRect(0,0,255,255);
+         
+           //ctx.fillStyle = "white";
+         //ctx.fillRect(0,0,255,255);
         }
         canvas.addEventListener("touchstart", blackdot);
     </script>
